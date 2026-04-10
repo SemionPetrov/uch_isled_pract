@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Обо мне{% endblock %}
+
+{% block content %}
+<h1>Добавление настольной игры</h1>
+<p>Хэй-хэй-хэй, хочешь добавить игру? <br> Для этого тебе нужно заполнить форму</p>
+
+<form  method="post">
+    <table class="forma_add" bgcolor="gold" border="1px">
+        <tr>
+        <th>Название игры</th>
+        <td><input name ='title' placeholder="Цитадели" type="text"></td>
+        </tr>
+    <tr>
+        <th>Краткое описание</th>
+        <td><textarea name = "description" placeholder="эта игра о средневековых замках...."></textarea></td>
+    </tr>
+
+    <tr>
+        <th>Минимальное число игроков</th>
+        <td><input name = "min_number_player" type="number"></td>
+    </tr>
+
+    <tr>
+        <th>Максимальное число игроков</th>
+        <td><input name = "max_number_player" type="number"></td>
+    </tr>
+
+
+    <tr>
+        <th>Минимальное время игры</th>
+        <td><input name = "min_playing_time" type="number"></td>
+    </tr>
+
+
+    <tr>
+        <th>Максимальное время игры</th>
+        <td><input name = "max_playing_time" type="number"></td>
+    </tr>
+
+    <tr>
+        <td align="center" colspan="2"><button type="button" onclick="addgame()">Добавить</button> <br></td>
+    </tr>
+    </table>
+</form><br><br>
+
+
+    <a href="/">обратно</a>
+
+<script>
+    async function addgame() {
+    const password = prompt("Введите пароль:");
+    if (!password) {
+        alert("Действие отменено");
+        return;
+    }
+
+    // Собираем данные формы
+    const form = document.querySelector("form");
+    const formData = new FormData(form);
+    formData.append("password", password); // Добавляем пароль
+
+    const response = await fetch("/add_games", {
+        method: "POST",
+        body: new URLSearchParams(formData)
+    });
+
+    if (response.status === 403) {
+        alert("❌ Неверный пароль!");
+    } else {
+        alert("✅ Игра добавлена!");
+    }
+    }
+    </script>
+{% endblock %}

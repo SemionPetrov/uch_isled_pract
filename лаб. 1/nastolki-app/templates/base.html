@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+    <title>{% block title %}Мои настолки{% endblock %}</title>
+    <meta charset="utf-8">
+
+</head>
+<body>
+<div class="right_pole" ><div class="W_hr"></div></div>
+<div class="left_pole" ><div class="r_W_hr"></div></div>
+<div class="main_pole" align="center">
+    <div class="headed">
+    <header>
+
+        <img width="300" height="100" src="{{ url_for('static', filename='zastavka-no-bg.png') }}" alt="Заставка">
+        <nav>
+            <a href ="/">Главная</a> |
+            <a href="/about_me">Обо мне</a>
+        </nav>
+
+        <hr color="gold">
+    </header>
+    </div>
+    {% block content %}
+    <main>
+
+
+    </main>
+    {% endblock %}
+</div>
+</body>
+</html>

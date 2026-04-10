@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Список игр{% endblock %}
+
+{% block content %}
+<div align="center">
+<h1>Список моих настольных игр </h1>
+<p>Тут находится спиcок настолок, которые у меня есть и <br> они оформлены в формате html таблицы</p>
+
+{% if games|length == 0 %}
+    <p>Пока нет ни одной игры. Добавьте первую!</p>
+    <a href="/add"> Добавить игру</a> <br>
+{% else %}
+    {%for g in games %}
+    <form method="post" id="game-form-{{ g[0] }}">
+    <table class="view_game" width="700" border="10" bgcolor="gray">
+            <tr bgcolor="#FFFFFF">
+
+                <td rowspan="2" width="70">
+                    <p>Игра №{{loop.index}}</p>
+                </td>
+                <th width="150">Название игры</th>
+                <th>Описание</th>
+                <th>Кол-во игроков</th>
+                <th>Время игры</th>
+                <td width="100">
+                    <input type="hidden" name="num_gam" value="{{g[0]}}">
+                    <button type="button" onclick="confirmAction('delete', {{ g[0] }})">Удалить игру</button>
+                </td>
+
+            </tr>
+
+            <tr bgcolor="#FFFFFF">
+                <td>{% if g[7] == 1 %}
+                    {{g[1]}}
+                    {% else %}
+                    <input type="text" name ='title' value={{g[1]}}>
+                    {% endif%}
+                </td>
+
+                <td width="200 ">
+                    {% if g[7] == 1 %}
+                    {{g[2]}}
+                    {% else %}
+                    <textarea name = "description"> {{g[2]}} </textarea>
+                    {% endif%}
+                </td>
+
+                <td>
+                    {% if g[7] == 1 %}
+                    {{g[3]}}-{{g[4]}}
+                    {% else %}
+                    <input type="number" name = "min_number_player" value={{g[3]}}>
+                    <input type="number" name = "max_number_player" value={{g[4]}}>
+                    {% endif%}
+                </td>
+
+                <td>
+                    {% if g[7] == 1 %}
+                    {{g[5]}}-{{g[6]}}<br>(мин)
+                    {% else %}
+                    <input type="number" name = "min_playing_time" value={{g[5]}}>
+                    <input type="number" name = "max_playing_time" value={{g[6]}}>
+                    {% endif%}
+                </td>
+
+                <td align="center">
+                    {% if g[7] == 1 %}
+                    <input type="hidden" name="num_gam" value="{{g[0]}}">
+                    <button type="button" onclick="confirmAction('update', {{ g[0] }})">Изменить</button>
+                    {% else %}
+                    <input type="hidden" name="num_gam" value="{{g[0]}}">
+                    <button type="submit" formaction="/save_update" >Сохранить</button>
+                    {% endif%}
+                </td>
+
+            </tr>
+    </table>
+    </form>
+        <hr color="gold" width="700">
+    {% endfor %}
+{% endif %}
+<a href ="/">Обратно</a>
+    <script>
+async function confirmAction(action, gameId) {
+    const password = prompt("Введите пароль:");
+    if (!password) {
+        alert("Действие отменено");
+        return;
+    }
+
+    const form = document.querySelector(`#game-form-${gameId}`);
+    const formData = new FormData(form);
+    formData.append("password", password);
+
+    let url;
+    if (action === 'delete') {
+        url = '/delete_game';
+    } else if (action === 'update') {
+        url = '/update_game';
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: new URLSearchParams(formData)
+        });
+
+        if (response.status === 403) {
+            alert("❌ Неверный пароль!");
+        } else {
+            window.location.href = '/games';
+        }
+    } catch (error) {
+        alert("Ошибка соединения: " + error.message);
+    }
+}
+</script>
+</script>
+
+{% endblock %}
+    </div>
